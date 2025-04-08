@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New EventMateriel{% endblock %}
+
+{% block body %}
+    <h1>Create new EventMateriel</h1>
+
+    {{ include('event_materiel/_form.html.twig') }}
+
+    <a href="{{ path('app_event_materiel_index') }}">back to list</a>
+{% endblock %}

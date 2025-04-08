@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventMateriel{% endblock %}
+
+{% block body %}
+    <h1>EventMateriel</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ event_materiel.id }}</td>
+            </tr>
+            <tr>
+                <th>Date_reservation</th>
+                <td>{{ event_materiel.dateReservation ? event_materiel.dateReservation|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_event_materiel_index') }}">back to list</a>
+
+    <a href="{{ path('app_event_materiel_edit', {'id': event_materiel.id}) }}">edit</a>
+
+    {{ include('event_materiel/_delete_form.html.twig') }}
+{% endblock %}

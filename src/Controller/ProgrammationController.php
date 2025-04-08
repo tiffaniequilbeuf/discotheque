@@ -2,117 +2,84 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Programmation;
 use App\Form\ProgrammationType;
 use App\Repository\ProgrammationRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/programmation')]
 final class ProgrammationController extends AbstractController
-{   
-    #[Route('/event', name: 'app_event')]
-    public function index(): Response
+{
+    #[Route(name: 'app_programmation_index', methods: ['GET'])]
+    public function index(ProgrammationRepository $programmationRepository): Response
     {
         return $this->render('programmation/index.html.twig', [
-            'controller_name' => 'ProgrammationController',
-            // 'events' =>$this->programmation(ProgrammationRepository::class),
+            'programmations' => $programmationRepository->findAll(),
+            'page_title' => '',
         ]);
     }
 
-    #[Route('event/create')]
-    // Ajouter une donnée depuis Symfony (moins brutal que directement dans la BDD, pour l'exercice)
-    // public function createEvent(EntityManagerInterface $em):Response{
-    //     $event = new Programmation();
-    //     $event->setName("King K'Rock");
-    //     $event->setDateParty(new \DateTime);
-    //     $event->setDescription('ça rock avec le roi Croco !');
-    //     $event->setCreateAt(new \DateTimeImmutable);
-
-    //     $em->persist($event);
-    //     $em->flush();
-
-    //     return new Response("créé avec l'id".$event->getId());
-    // }
-
-    public function createEvent(Request $request, EntityManagerInterface $em): Response
+    #[Route('/new', name: 'app_programmation_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $event = new Programmation();
-        $form = $this->createForm(ProgrammationType::class, $event);
+        $programmation = new Programmation();
+        $form = $this->createForm(ProgrammationType::class, $programmation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event->setCreateAt(new \DateTimeImmutable());
-            $em->persist($event);
-            $em->flush();
-            dd($event);
+            $entityManager->persist($programmation);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_programmation_index', [], Response::HTTP_SEE_OTHER);
         }
-        return $this->render('programmation/index.html.twig', [
-            'page_title' => 'évenement',
+
+        return $this->render('programmation/new.html.twig', [
+            'programmation' => $programmation,
             'form' => $form,
+            'page_title' => '',
         ]);
     }
 
-    #[Route('/programmation')]
-    // public function programmation(EntityManagerInterface $em){
-    //     $repositoryProgrammation=$em->getRepository(Programmation::class);
-    //     $events=$repositoryProgrammation->findAll();
-    //     dd($events);
-    // }
-
-    public function programmation(ProgrammationRepository $programmationRepository)
+    #[Route('/{id}', name: 'app_programmation_show', methods: ['GET'])]
+    public function show(Programmation $programmation): Response
     {
-        $events = $programmationRepository->findAll();
-        // return $events;
-        // dd($events);
+        return $this->render('programmation/show.html.twig', [
+            'programmation' => $programmation,
+            'page_title' => "",
+        ]);
     }
 
-    #[Route('/programmation/show/{id}')]
-    public function show(ProgrammationRepository $programmationRepository, $id)
+    #[Route('/{id}/edit', name: 'app_programmation_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Programmation $programmation, EntityManagerInterface $entityManager): Response
     {
-        $event = $programmationRepository->find($id);
-        dd($event);
-    }
-    // function show(ProgrammationRepository $programmationRepository): Response {
-    //     dd($programmationRepository);
-    // }
+        $form = $this->createForm(ProgrammationType::class, $programmation);
+        $form->handleRequest($request);
 
-    #[Route('/programmation/update/{id}')]
-    public function update(EntityManagerInterface $entityManager, int $id)
-    {
-        $event = $entityManager->getRepository(Programmation::class)->find($id);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
 
-        if (!$event) {
-            throw $this->createNotFoundException(
-                'No product found for id ' . $id
-            );
+            return $this->redirectToRoute('app_programmation_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        $event->setName('DiscoBear');
-        $entityManager->flush();
-
-        dd($event);
-            // return $this->redirectToRoute('product_show', [
-            //     'id' => $event->getId()
-            // ])
-        ;
+        return $this->render('programmation/edit.html.twig', [
+            'programmation' => $programmation,
+            'form' => $form,
+            'page_title' => "",
+        ]);
     }
 
-
-    #[Route('/programmation/delete/{id}')]
-    public function delete(EntityManagerInterface $entityManager, int $id)
+    #[Route('/{id}', name: 'app_programmation_delete', methods: ['POST'])]
+    public function delete(Request $request, Programmation $programmation, EntityManagerInterface $entityManager): Response
     {
-        $event = $entityManager->getRepository(Programmation::class)->find($id);
-
-        if (!$event) {
-            throw $this->createNotFoundException(
-                'No product found for id ' . $id
-            );
+        if ($this->isCsrfTokenValid('delete'.$programmation->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($programmation);
+            $entityManager->flush();
         }
-        $entityManager->remove($event);
-        $entityManager->flush();
-        dd($event);
+
+        return $this->redirectToRoute('app_programmation_index', [], Response::HTTP_SEE_OTHER);
     }
 }

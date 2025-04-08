@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Evènement</th>
+                <th>Nom du matériel</th>
+                <th>Quantité</th>          
+                <th>Date_reservation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event_materiel in event_materiels %}
+            <tr>
+                <td>{{ event_materiel.programmation.name}}</td>
+                <td>{{ event_materiel.materiel.name}}</td>
+                <td>{{ event_materiel.materiel.quantity}}</td>
+                {# {{dump(event_materiel.materiel.name)}} #}
+                <td>{{ event_materiel.dateReservation ? event_materiel.dateReservation|date('d-m-Y') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_event_materiel_show', {'id': event_materiel.id}) }}">Voir</a>
+                    <a href="{{ path('app_event_materiel_edit', {'id': event_materiel.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_event_materiel_new') }}">Ajouter</a>
+{% endblock %}

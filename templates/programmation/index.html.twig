@@ -1,7 +1,41 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Programmation index{% endblock %}
+
 {% block body %}
-<div class="row">
-    <div class="col-lg-4">{{form(form)}}</div>
-</div>
+    <h1>Programmation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>DateParty</th>
+                <th>Description</th>
+                <th>CreateAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for programmation in programmations %}
+            <tr>
+                <td>{{ programmation.id }}</td>
+                <td>{{ programmation.name }}</td>
+                <td>{{ programmation.dateParty ? programmation.dateParty|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ programmation.description }}</td>
+                <td>{{ programmation.createAt ? programmation.createAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_programmation_show', {'id': programmation.id}) }}">show</a>
+                    <a href="{{ path('app_programmation_edit', {'id': programmation.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_programmation_new') }}">Create new</a>
 {% endblock %}
