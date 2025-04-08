@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProgrammationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProgrammationRepository::class)]
 class Programmation
@@ -14,6 +15,14 @@ class Programmation
     #[ORM\Column]
     private ?int $id = null;
 
+
+    #[Assert\Length(
+    min: 5,
+    max: 50,
+    minMessage: 'Ce titre est trop court. Il doit être compris entre 5 et 50 caractères.',
+    maxMessage: 'Ce titre est trop long. Il doit être compris entre 5 et 50 caractères.'
+    )]
+    #[Assert\NotBlank(message: 'Le titre ne peut pas être vide.')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
