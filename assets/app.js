@@ -1,4 +1,11 @@
 import './bootstrap.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+import Duck from './duck.js';
+
+const duck = new Duck('Waddles');
+duck.quack();
 /*
  * Welcome to your app's main JavaScript file!
  *

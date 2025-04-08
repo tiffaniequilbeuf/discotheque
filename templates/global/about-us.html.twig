@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}{# {{dump(etapes)}} #}
+<ul>
+    {% for etape in etapes %}
+    <li>{{etape.year}} : {{etape.event}}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
