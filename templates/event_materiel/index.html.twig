@@ -17,7 +17,6 @@
                 <td>{{ event_materiel.programmation.name}}</td>
                 <td>{{ event_materiel.materiel.name}}</td>
                 <td>{{ event_materiel.materiel.quantity}}</td>
-                {# {{dump(event_materiel.materiel.name)}} #}
                 <td>{{ event_materiel.dateReservation ? event_materiel.dateReservation|date('d-m-Y') : '' }}</td>
                 <td>
                     <a href="{{ path('app_event_materiel_show', {'id': event_materiel.id}) }}">Voir</a>

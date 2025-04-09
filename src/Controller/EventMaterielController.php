@@ -4,13 +4,15 @@ namespace App\Controller;
 
 use App\Entity\EventMateriel;
 use App\Form\EventMaterielType;
-use App\Repository\EventMaterielRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\EventMaterielRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/event/materiel')]
 final class EventMaterielController extends AbstractController
 {
@@ -22,7 +24,7 @@ final class EventMaterielController extends AbstractController
             'page_title' => "Organisation",
         ]);
     }
-
+    
     #[Route('/new', name: 'app_event_materiel_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -53,6 +55,7 @@ final class EventMaterielController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/edit', name: 'app_event_materiel_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, EventMateriel $eventMateriel, EntityManagerInterface $entityManager): Response
     {
