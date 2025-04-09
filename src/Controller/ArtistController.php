@@ -20,7 +20,7 @@ final class ArtistController extends AbstractController
     {
         return $this->render('artist/index.html.twig', [
             'artists' => $artistRepository->findAll(),
-            'page_title' => '',
+            'page_title' => 'Artistes',
         ]);
     }
 
